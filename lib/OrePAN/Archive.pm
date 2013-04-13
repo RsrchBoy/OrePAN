@@ -3,8 +3,8 @@ package OrePAN::Archive;
 use strict;
 use warnings;
 use utf8;
-use YAML::Tiny ();
-use JSON ();
+
+use CPAN::Meta;
 use List::MoreUtils qw/any/;
 use Log::Minimal;
 use File::Basename;
@@ -30,14 +30,13 @@ sub load_meta {
     my $self = shift;
 
     my @files = @{$self->files};
-    if ( my ($json) = grep /META.json$/, @files ) {
-        JSON::decode_json($json->slurp);
+    if ( my ($json) = grep /META\.json$/, @files ) {
+        CPAN::Meta->load_file($json)->as_struct();
     }
-    elsif ( my ($yml) = grep /META\.yml/, @files ) {
+    elsif ( my ($yml) = grep /META\.yml$/, @files ) {
         my $dat = eval {
-            # json format yaml
-            my $data = $yml->slurp;
-            YAML::Tiny::Load($data) || JSON::decode_json($data);
+            # Note. Some module contains json format YAMl
+            CPAN::Meta->load_file($yml)->as_struct();
         };
         return $dat;
     }
