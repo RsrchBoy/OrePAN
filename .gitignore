@@ -13,6 +13,11 @@ blib/
 pm_to_blib
 tags
 MYMETA.*
-META.json
 ^inc/
 OrePAN-*/
+/OrePAN-*
+/.build
+/_build_params
+/Build
+!Build/
+!META.json

@@ -1,0 +1,90 @@
+{
+   "abstract" : "yet another CPAN mirror aka DarkPAN repository manager",
+   "author" : [
+      "tokuhirom <tokuhirom@gmail.com>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Minilla/v0.0.53, CPAN::Meta::Converter version 2.130870",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "OrePAN",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples",
+         "author"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.59",
+            "Test::More" : "0.96"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "CPAN::Meta" : "0",
+            "CPAN::Meta::Prereqs" : "0",
+            "Devel::CheckBin" : "0",
+            "Module::Build" : "0.38"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Pod::Wordlist::hanekomu" : "0",
+            "Test::CPAN::Meta" : "0",
+            "Test::MinimumVersion" : "0.10108",
+            "Test::Pod" : "1.41",
+            "Test::Spelling" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "CPAN::DistnameInfo" : "0",
+            "Cwd" : "0",
+            "File::Basename" : "0",
+            "File::Find" : "0",
+            "File::Temp" : "0",
+            "File::Which" : "0",
+            "IO::Zlib" : "0",
+            "JSON" : "2.27",
+            "LWP::UserAgent" : "0",
+            "List::MoreUtils" : "0",
+            "Log::Minimal" : "0.02",
+            "Mouse" : "0",
+            "Path::Class" : "0",
+            "YAML::Tiny" : "0",
+            "perl" : "5.008001"
+         }
+      }
+   },
+   "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/tokuhirom/OrePAN/issues"
+      },
+      "homepage" : "https://github.com/tokuhirom/OrePAN",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/tokuhirom/OrePAN.git",
+         "web" : "https://github.com/tokuhirom/OrePAN"
+      }
+   },
+   "version" : "0.07",
+   "x_contributors" : [
+      "Masahiro Nagano <m-nagano@livedoor.jp>",
+      "bonnu <boxphere@cpan.org>",
+      "Masahiro Nagano <kazeburo@gmail.com>",
+      "motemen <motemen@gmail.com>"
+   ]
+}

@@ -1,32 +1,22 @@
-package OrePAN;
-use strict;
-use warnings;
-use 5.008001;
-# This is just a placeholder class.
-our $VERSION='0.07';
-1;
-__END__
-
-=head1 NAME
+# NAME
 
 OrePAN - yet another CPAN mirror aka DarkPAN repository manager
 
-=head1 SYNOPSIS
+# SYNOPSIS
 
     use OrePAN;
 
-=head1 DESCRIPTION
+# DESCRIPTION
 
 OrePAN is yet another CPAN mirror aka DarkPAN repository manager
 
-=head1 LICENSE
+# LICENSE
 
 Copyright (C) tokuhirom
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
-=head1 AUTHOR
+# AUTHOR
 
-tokuhirom E<lt>tokuhirom@gmail.comE<gt>
-
+tokuhirom <tokuhirom@gmail.com>
