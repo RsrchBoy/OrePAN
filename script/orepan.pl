@@ -18,6 +18,7 @@ use File::Copy;
 use Log::Minimal;
 use LWP::UserAgent;
 use File::Temp;
+use File::Spec::Functions qw(catfile);
 
 our $VERSION=$OrePAN::VERSION;
 
@@ -61,19 +62,19 @@ copy($pkg, $authordir->file(basename($pkg)));
 infof("get package names");
 my %packages = $archive->get_packages;
 
-# make index
-infof('make index');
+# make 02.packages.details.txt.gz
 $destination->subdir('modules')->mkpath;
-my $pkg_file = $destination->file('modules', '02packages.details.txt.gz');
-my $index = OrePAN::Package::Index->new(filename => "$pkg_file");
-$index->add(
+my $pkg_file = catfile($destination, 'modules', '02packages.details.txt.gz');
+infof('Making %s', $pkg_file);
+my $packages = -f $pkg_file ? OrePAN::Package::Index->load($pkg_file) : OrePAN::Package::Index->new();
+$packages->add(
     File::Spec->catfile(
         substr( $pauseid, 0, 1 ), substr( $pauseid, 0, 2 ),
         $pauseid, basename($pkg)
     ),
     \%packages
 );
-$index->save();
+$packages->save($pkg_file);
 
 __END__
 

@@ -15,7 +15,7 @@ my $tmp = File::Temp->new();
 
 # make index
 {
-    my $index = OrePAN::Package::Index->new(filename => $tmp->filename);
+    my $index = OrePAN::Package::Index->load($tmp->filename);
     my $archive = OrePAN::Archive->new(filename => "t/dummy-cpan/Foo-Bar-0.01.tar.gz");
     my %packages = $archive->get_packages;
     is_deeply \%packages, { 'Foo::Bar' => '0.01' };
@@ -28,7 +28,7 @@ my $tmp = File::Temp->new();
         ),
         \%packages
     );
-    $index->save();
+    $index->save($tmp->filename);
 }
 
 # and read it.

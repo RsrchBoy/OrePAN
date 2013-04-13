@@ -17,6 +17,7 @@ use File::Basename;
 use Path::Class;
 use Log::Minimal;
 use File::Find;
+use File::Spec::Functions qw(catfile);
 
 our $VERSION='0.01';
 
@@ -31,8 +32,8 @@ $repository = dir($repository);
 my $authordir = $repository->subdir('authors');
 
 $repository->subdir('modules')->mkpath;
-my $pkg_file = $repository->file('modules', '02packages.details.txt.gz');
-my $index = OrePAN::Package::Index->new(filename => "$pkg_file");
+my $packages_file = catfile($repository, 'modules', '02packages.details.txt.gz');
+my $packages = OrePAN::Package::Index->load($packages_file);
 
 my $whois_file = $repository->file('authors', '00whois.xml');
 my $whois = CPAN::Whois->new();
@@ -52,10 +53,10 @@ sub build_index {
 
     # make index
     infof('make index');
-    $index->add(
+    $packages->add(
         $parsed,
         \%packages
-    );
+    ) or print STDERR $packages->errstr . "\n";
 
     $whois->add(
         id => $pauseid,
@@ -65,7 +66,11 @@ sub build_index {
 }
 
 find({ wanted => \&build_index, no_chdir => 1 }, $authordir );
-$index->save();
+
+infof("Saving $packages_file");
+$packages->save($packages_file);
+
+infof("Saving $whois_file");
 $whois->save("$whois_file");
 
 __END__
