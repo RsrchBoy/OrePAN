@@ -35,7 +35,7 @@ my $pkg_file = $repository->file('modules', '02packages.details.txt.gz');
 my $index = OrePAN::Package::Index->new(filename => "$pkg_file");
 
 my $whois_file = $repository->file('authors', '00whois.xml');
-my $whois = CPAN::Whois->load();
+my $whois = CPAN::Whois->new();
 
 sub build_index {
     my $file = $_;
@@ -59,6 +59,8 @@ sub build_index {
 
     $whois->add(
         id => $pauseid,
+        type => 'author',
+        has_cpandir => 1,
     );
 }
 
