@@ -12,7 +12,6 @@ use Pod::Usage qw/pod2usage/;
 use Data::Dumper; sub p { print STDERR Dumper(@_) }
 use Getopt::Long;
 use File::Basename qw(basename dirname);
-use Path::Class;
 use File::Copy;
 use Log::Minimal;
 use LWP::UserAgent;
@@ -69,10 +68,9 @@ sub run {
 
     # Put the archive to repository
     infof("put the archive to repository");
-    $destination = dir($destination);
-    my $authordir = $destination->subdir('authors', 'id', substr($pauseid, 0, 1), substr($pauseid, 0, 2), $pauseid);
-    $authordir->mkpath;
-    copy($pkg, $authordir->file(basename($pkg)));
+    my $authordir = catdir($destination, 'authors', 'id', substr($pauseid, 0, 1), substr($pauseid, 0, 2), $pauseid);
+    mkpath($authordir);
+    copy($pkg, catfile($authordir, basename($pkg)));
 
     # Scan packages
     infof("get package names");

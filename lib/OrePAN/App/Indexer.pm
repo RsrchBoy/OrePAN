@@ -12,9 +12,8 @@ use Pod::Usage qw/pod2usage/;
 use Data::Dumper; sub p { print STDERR Dumper(@_) }
 use Getopt::Long;
 use File::Basename qw(dirname basename);
-use Path::Class;
 use Log::Minimal;
-use File::Find;
+use File::Find ();
 use File::Spec::Functions qw(catfile catdir);
 use File::Path qw(mkpath);
 
@@ -54,7 +53,7 @@ sub run {
     my $whois = OrePAN::Whois->new();
 
     # Scan archives.
-    find({ wanted => sub {
+    File::Find::find({ wanted => sub {
         my $file = $_;
         return if ! -f $file;
         return if $file !~ m!(?:\.zip|\.tar|\.tar\.gz|\.tgz)$!i;

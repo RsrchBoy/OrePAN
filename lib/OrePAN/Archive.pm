@@ -9,12 +9,12 @@ use List::MoreUtils qw/any/;
 use Log::Minimal;
 use File::Basename;
 use File::Temp qw(tempdir);
-use Path::Class;
 use File::Which qw(which);  
 use Cwd qw/realpath getcwd/;
 use File::pushd;
 use File::Path qw(rmtree);
 use File::Spec::Functions qw(catdir rel2abs);
+use File::Find ();
 
 sub load {
     my ($class, $filename) = @_;
@@ -51,11 +51,11 @@ sub files {
     my $self = shift;
 
     my @files;
-    dir($self->extracted_directory)->recurse(callback => sub {
-        my $path = shift;
-        return if $path->is_dir;
-        push @files, $path;
-    });
+    File::Find::find({ wanted => sub {
+        my $file = $_;
+        return if ! -f $file;
+        push @files, $file;
+    }, no_chdir => 1 }, $self->extracted_directory );
     return \@files;
 }
 
@@ -63,11 +63,13 @@ sub files {
 sub extracted_directory {
     my $self = shift;
 
-    if ($self->filename =~ m!\.zip$!i) {
-        return $self->unzip($self->filename)
-    } else {
-        return $self->untar($self->filename);
-    }
+    $self->{extracted_directory} ||= do {
+        if ($self->filename =~ m!\.zip$!i) {
+            $self->unzip($self->filename)
+        } else {
+            $self->untar($self->filename);
+        }
+    };
 }
 
 
@@ -83,7 +85,8 @@ sub _parse_version($) {
 
     local $/ = "\x0a";
     local $_;
-    my $fh = $parsefile->openr;
+    open my $fh, '<', $parsefile
+        or Carp::croak("Cannot open file '$parsefile' for reading: $!");
 
     LOOP: while (<$fh>) {
         $inpod = /^=(?!cut)/ ? 1 : /^=cut/ ? 0 : $inpod;
