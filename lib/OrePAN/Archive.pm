@@ -88,15 +88,6 @@ has meta => (
     },
 );
 
-has name => (
-    is => 'ro',
-    lazy => 1,
-    default => sub {
-        my $self = shift;
-        $self->meta->{name};
-    },
-);
-
 no Mouse;
 
 sub _parse_version($) {
