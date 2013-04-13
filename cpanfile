@@ -12,6 +12,7 @@ requires 'Log::Minimal', '0.02';
 requires 'Mouse';
 requires 'Path::Class';
 requires 'YAML::Tiny';
+requires 'File::pushd';
 requires 'perl', '5.008001';
 
 on build => sub {

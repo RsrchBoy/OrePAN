@@ -14,6 +14,7 @@ use File::Temp;
 use Path::Class;
 use File::Which qw(which);  
 use Cwd qw/realpath getcwd/;
+use File::pushd;
 
 subtype 'File' => as class_type('Path::Class::File');
 coerce 'File' => from 'Str' => via { Path::Class::file(realpath($_)) };
@@ -96,6 +97,7 @@ has name => (
     },
 );
 
+no Mouse;
 
 sub _parse_version($) {
     my $parsefile = shift;
@@ -214,7 +216,7 @@ sub untar {
     my $tarfile = shift;
     if ( my $tar = which('tar') ) {
         my $tempdir = $self->tmpdir;
-        my $guard = OrePAN::Archive::Chdir->new($tempdir);
+        my $guard = pushd($tempdir);
         
         my $xf = "xf";
         my $ar = $tarfile =~ /bz2$/ ? 'j' : 'z';
@@ -237,7 +239,7 @@ sub unzip {
     my $zipfile = shift;
     if ( my $unzip = which('unzip') ) {
         my $tempdir = $self->tmpdir;
-        my $guard = OrePAN::Archive::Chdir->new($tempdir);
+        my $guard = pushd($tempdir);
 
         my(undef, $root, @others) = `$unzip -t $zipfile`
             or return undef;
@@ -254,28 +256,6 @@ sub unzip {
 sub DEMOLISH {
     my $self = shift;
     $self->tmpdir->rmtree();
-}
-
-no Mouse;
-# FIXME This class has a 'meta' attribute. Cannot access to Mouse meta class.
-# __PACKAGE__->meta->make_immutable;
-
-package 
-    OrePAN::Archive::Chdir;
-
-use Cwd qw/getcwd/;
-
-sub new {
-    my $class = shift;
-    my $dir = shift;
-    my $cwd = getcwd();
-    my $guard = sub { chdir($cwd) };
-    chdir($dir);
-    bless \$guard, $class;
-}
-
-sub DESTROY {
-    ${$_[0]}->();
 }
 
 1;
