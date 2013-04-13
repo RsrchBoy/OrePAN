@@ -1,4 +1,4 @@
-package OrePAN::App::Index;
+package OrePAN::App::Indexer;
 use strict;
 use warnings;
 use utf8;

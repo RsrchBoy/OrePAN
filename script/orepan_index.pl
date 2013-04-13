@@ -3,9 +3,9 @@ use strict;
 use warnings;
 use utf8;
 use 5.008001;
-use OrePAN::App::Index;
+use OrePAN::App::Indexer;
 
-OrePAN::App::Index->new()->run();
+OrePAN::App::Indexer->new()->run();
 
 __END__
 
