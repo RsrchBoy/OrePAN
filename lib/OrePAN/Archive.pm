@@ -263,7 +263,15 @@ __END__
 
 =head1 NAME
 
-OrePAN::Archive - Archive
+OrePAN::Archive - Parse CPAN module tar ball and get informations
+
+=head1 DESCRIPTION
+
+This module parse CPAN module tar ball and get informations.
+
+=head1 METHODS
+
+TBD
 
 =head1 SEE ALSO
 
