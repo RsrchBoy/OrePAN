@@ -7,7 +7,7 @@ use lib 'lib';
 use 5.008001;
 use OrePAN::Package::Index;
 use OrePAN::Archive;
-use OrePAN::Package::Whois;
+use CPAN::Whois;
 
 use Carp ();
 use Pod::Usage qw/pod2usage/;
@@ -35,7 +35,7 @@ my $pkg_file = $repository->file('modules', '02packages.details.txt.gz');
 my $index = OrePAN::Package::Index->new(filename => "$pkg_file");
 
 my $whois_file = $repository->file('authors', '00whois.xml');
-my $whois = OrePAN::Package::Whois->new(filename => "$whois_file");
+my $whois = CPAN::Whois->load();
 
 sub build_index {
     my $file = $_;
@@ -57,12 +57,14 @@ sub build_index {
         \%packages
     );
 
-    $whois->add(cpanid => $pauseid);
+    $whois->add(
+        id => $pauseid,
+    );
 }
 
 find({ wanted => \&build_index, no_chdir => 1 }, $authordir );
 $index->save();
-$whois->save();
+$whois->save("$whois_file");
 
 __END__
 
