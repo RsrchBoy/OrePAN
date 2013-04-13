@@ -21,6 +21,8 @@ has data => (
     default => sub { +{} },
 );
 
+no Mouse;
+
 sub BUILD {
     my ($self, ) = @_;
     if (-f $self->filename) {
@@ -104,6 +106,14 @@ sub save {
       or Carp::croak("Cannot rename temporary file '$tmp' to @{[ $self->filename ]}: $!");
 }
 
-no Mouse; __PACKAGE__->meta->make_immutable;
 1;
+__END__
+
+=head NAME
+
+OrePAN::Package::Index - Indexer fo 02.packages.details.gz
+
+=head1 SEE ALSO
+
+L<Parse::CPAN::Packages>
 

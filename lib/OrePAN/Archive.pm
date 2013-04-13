@@ -259,3 +259,17 @@ sub DEMOLISH {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+OrePAN::Archive - Archive
+
+=head1 SEE ALSO
+
+L<Dist::Metadata>
+
+L<MyCPAN::Indexer>
+
+L<CPAN::ParseDistribution>
+

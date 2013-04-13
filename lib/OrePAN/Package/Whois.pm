@@ -16,6 +16,8 @@ has data => (
     default => '',
 );
 
+no Mouse;
+
 sub add {
     my ($self, %data) = @_;
     $self->{data} .= <<"EOS";
@@ -41,5 +43,13 @@ EOS
     close $fh;
 }
 
-no Mouse; __PACKAGE__->meta->make_immutable;
 1;
+__END__
+
+=head1 NAME
+
+OrePAN::Package::Whois - authors/00whois.xml
+
+=head1 DESCRIPTION
+
+This is a generator for C<authors/00whois.xml>.
