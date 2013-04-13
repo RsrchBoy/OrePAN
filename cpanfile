@@ -19,6 +19,7 @@ requires 'Getopt::Long';
 requires 'Mouse::Util::TypeConstraints';
 requires 'Pod::Usage';
 requires 'version';
+requires 'Class::Accessor::Lite', 0.05;
 
 on build => sub {
     requires 'ExtUtils::MakeMaker', '6.59';

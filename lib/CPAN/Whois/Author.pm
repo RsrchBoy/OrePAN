@@ -3,13 +3,10 @@ use strict;
 use warnings;
 use utf8;
 
-use Moo;
-
-has [qw(id type has_cpandir)]  => (
-    is => 'rw',
+use Class::Accessor::Lite (
+    new => 1,
+    rw  => [qw(id type has_cpandir)],
 );
-
-no Moo;
 
 sub as_xml {
     my $self = shift;
@@ -36,7 +33,7 @@ CPAN::Whois::Author - Author entry for 00whois.xml
 
 This is a author entry object for C<00whois.xml>.
 
-=head1 METHODS
+=head1 ATTRIBUTES
 
 =over 4
 
@@ -48,3 +45,16 @@ This is a author entry object for C<00whois.xml>.
 
 =back
 
+=head1 METHODS
+
+=over 4
+
+=item my $author = CPAN::Whois::Author->new(%args)
+
+Create new instance.
+
+=item $author->as_xml();
+
+Generate XML string from C<< $author >>.
+
+=back

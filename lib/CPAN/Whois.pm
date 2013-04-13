@@ -4,16 +4,12 @@ use strict;
 use warnings;
 use utf8;
 
-use Moo;
-
-has _authors => (
-    is      => 'ro',
-    default => sub { +[] },
-);
-
-no Moo;
-
 use CPAN::Whois::Author;
+
+sub new {
+    my $class = shift;
+    bless {}, $class;
+}
 
 sub authors {
     my $self = shift;
@@ -62,7 +58,35 @@ __END__
 
 CPAN::Whois - authors/00whois.xml
 
+=head1 SYNOPSIS
+
+    use CPAN::Whois;
+
+    my $whois = CPAN::Whois->new();
+    $whois->add(id => 'DANKOGAI', type => 'author', has_cpandir => 1);
+    $whois->save('00whois.xml');
+
 =head1 DESCRIPTION
 
 This is a generator for C<authors/00whois.xml>.
+
+=head1 METHODS
+
+=over 4
+
+=item my $whois = CPAN::Whois->new();
+
+Create new instance of this class.
+
+=item $whois->add(%args)
+
+=item $whois->as_xml()
+
+Create XML string from the object.
+
+=item $whois->save($filename);
+
+Save the content of whois xml to C<$filename>.
+
+=back
 
