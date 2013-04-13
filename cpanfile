@@ -11,7 +11,6 @@ requires 'JSON', '2.27';
 requires 'LWP::UserAgent';
 requires 'List::MoreUtils';
 requires 'Log::Minimal', '0.02';
-requires 'Mouse';
 requires 'Path::Class';
 requires 'YAML::Tiny';
 requires 'File::pushd';

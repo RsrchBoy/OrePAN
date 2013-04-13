@@ -3,13 +3,12 @@ package OrePAN::Archive;
 use strict;
 use warnings;
 use utf8;
-use Mouse;
 use YAML::Tiny ();
 use JSON ();
 use List::MoreUtils qw/any/;
 use Log::Minimal;
 use File::Basename;
-use File::Temp;
+use File::Temp qw(tempdir);
 use Path::Class;
 use File::Which qw(which);  
 use Cwd qw/realpath getcwd/;
@@ -17,77 +16,64 @@ use File::pushd;
 use File::Path qw(rmtree);
 use File::Spec::Functions qw(catdir rel2abs);
 
-has filename => (
-    is       => 'ro',
-    required => 1,
-);
-
-has archive => (
-    is => 'ro',
-    lazy => 1,
-    default => sub {
-        my $self = shift;
-        debugf('extering');
-        $self->filename =~ m!\.zip$!i ?
-            $self->unzip($self->filename)
-          : $self->untar($self->filename);
-    },
-);
-
-has tmpdir => (
-    is => 'ro',
-    lazy => 1,
-    default => sub {
-        File::Temp::tempdir(CLEANUP => 0)
-    },
-);
-
-has files => (
-    is => 'ro',
-    lazy => 1,
-    default => sub {
-        my $self = shift;
-        my @files;
-        dir($self->archive)->recurse(callback => sub {
-            my $path = shift;
-            return if $path->is_dir;
-            push @files, $path;
-        });
-        return \@files;
-    },
-);
-
-has meta => (
-    is      => 'ro',
-    lazy => 1,
-    default => sub {
-        my $self = shift;
-        my @files = @{$self->files};
-        infof("retrieve meta data");
-        if ( my ($json) = grep /META.json$/, @files ) {
-             JSON::decode_json($json->slurp);
-        }
-        elsif ( my ($yml) = grep /META\.yml/, @files ) {
-            eval{
-                # json format yaml
-                my $data = $yml->slurp;
-                YAML::Tiny::Load($data) || JSON::decode_json($data);
-            };
-        }
-        else {
-            warnf("Archive does not contains META file");
-            return +{};
-        }
-    },
-);
-
-no Mouse;
-
 sub load {
     my ($class, $filename) = @_;
-    $class->new(
+
+    bless {
         filename => rel2abs($filename),
-    );
+    }, $class;
+}
+
+sub filename { $_[0]->{filename} }
+
+sub load_meta {
+    my $self = shift;
+
+    my @files = @{$self->files};
+    if ( my ($json) = grep /META.json$/, @files ) {
+        JSON::decode_json($json->slurp);
+    }
+    elsif ( my ($yml) = grep /META\.yml/, @files ) {
+        my $dat = eval {
+            # json format yaml
+            my $data = $yml->slurp;
+            YAML::Tiny::Load($data) || JSON::decode_json($data);
+        };
+        return $dat;
+    }
+    else {
+        return undef;
+    }
+}
+
+
+sub files {
+    my $self = shift;
+
+    my @files;
+    dir($self->extracted_directory)->recurse(callback => sub {
+        my $path = shift;
+        return if $path->is_dir;
+        push @files, $path;
+    });
+    return \@files;
+}
+
+
+sub extracted_directory {
+    my $self = shift;
+
+    if ($self->filename =~ m!\.zip$!i) {
+        return $self->unzip($self->filename)
+    } else {
+        return $self->untar($self->filename);
+    }
+}
+
+
+sub tmpdir {
+    my $self = shift;
+    $self->{tmpdir} ||= tempdir(CLEANUP => 0);
 }
 
 sub _parse_version($) {
@@ -170,12 +156,18 @@ sub _parse_version($) {
 
 sub get_packages {
     my ($self) = @_;
-    my $meta = $self->meta || +{};
+
+    my $meta = $self->load_meta;
+    unless ($meta) {
+        warnf("Cannot load META file from archive");
+    }
+    $meta ||= +{};
+
     my $ignore_dirs = $meta->{no_index} && $meta->{no_index}->{directory} ? $meta->{no_index}->{directory} : [];
     my @ignore_dirs = ref $ignore_dirs ? @$ignore_dirs : [$ignore_dirs];
     push @ignore_dirs, "t","xt", 'contrib', 'examples','inc','share','private', 'blib';
     infof("files");
-    my $archive = $self->archive;
+    my $archive = $self->extracted_directory;
     my @files = @{$self->files()};
     infof("ok files");
     my %res;
@@ -244,9 +236,9 @@ sub unzip {
     }
 }
 
-sub DEMOLISH {
+sub DESTROY {
     my $self = shift;
-    rmtree($self->tmpdir);
+    rmtree($self->tmpdir) if $self->{tmpdir};
 }
 
 1;
