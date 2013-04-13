@@ -19,9 +19,6 @@ use File::pushd;
 subtype 'File' => as class_type('Path::Class::File');
 coerce 'File' => from 'Str' => via { Path::Class::file(realpath($_)) };
 
-subtype 'Dir' => as class_type('Path::Class::Dir');
-coerce 'Dir' => from 'Str' => via { Path::Class::dir(realpath($_)) };
-
 has filename => (
     is       => 'ro',
     isa      => 'File',
