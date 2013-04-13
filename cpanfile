@@ -1,3 +1,5 @@
+requires 'perl', '5.008001';
+
 requires 'CPAN::DistnameInfo';
 requires 'Cwd';
 requires 'File::Basename';
@@ -13,7 +15,10 @@ requires 'Mouse';
 requires 'Path::Class';
 requires 'YAML::Tiny';
 requires 'File::pushd';
-requires 'perl', '5.008001';
+requires 'Getopt::Long';
+requires 'Mouse::Util::TypeConstraints';
+requires 'Pod::Usage';
+requires 'version';
 
 on build => sub {
     requires 'ExtUtils::MakeMaker', '6.59';
