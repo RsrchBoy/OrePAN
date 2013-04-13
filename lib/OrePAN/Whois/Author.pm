@@ -1,4 +1,4 @@
-package CPAN::Whois::Author;
+package OrePAN::Whois::Author;
 use strict;
 use warnings;
 use utf8;
@@ -27,7 +27,7 @@ __END__
 
 =head1 NAME
 
-CPAN::Whois::Author - Author entry for 00whois.xml
+OrePAN::Whois::Author - Author entry for 00whois.xml
 
 =head1 DESCRIPTION
 
@@ -49,7 +49,7 @@ This is a author entry object for C<00whois.xml>.
 
 =over 4
 
-=item my $author = CPAN::Whois::Author->new(%args)
+=item my $author = OrePAN::Whois::Author->new(%args)
 
 Create new instance.
 

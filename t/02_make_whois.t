@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use utf8;
 use Test::More;
-use CPAN::Whois;
+use OrePAN::Whois;
 use File::Temp;
 use IO::File;
 
@@ -10,7 +10,7 @@ my $tmp = File::Temp->new();
 
 # make whois
 {
-    my $whois = CPAN::Whois->new();
+    my $whois = OrePAN::Whois->new();
     my $pauseid = "DUMMY";
     $whois->add(id => $pauseid, type => 'author', has_cpandir => 1);
     $whois->save($tmp->filename);

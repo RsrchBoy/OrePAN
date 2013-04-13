@@ -5,6 +5,6 @@ use_ok $_ for qw/
     OrePAN
     OrePAN::Archive
     OrePAN::Package::Index
-    CPAN::Whois
+    OrePAN::Whois
 /;
 

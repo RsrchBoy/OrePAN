@@ -1,10 +1,10 @@
-package CPAN::Whois;
+package OrePAN::Whois;
 
 use strict;
 use warnings;
 use utf8;
 
-use CPAN::Whois::Author;
+use OrePAN::Whois::Author;
 
 sub new {
     my $class = shift;
@@ -13,7 +13,7 @@ sub new {
 
 sub authors {
     my $self = shift;
-    map { CPAN::Whois::Author->new($_) } @{$self->{_authors}};
+    map { OrePAN::Whois::Author->new($_) } @{$self->{_authors}};
 }
 
 sub add {
@@ -56,13 +56,13 @@ __END__
 
 =head1 NAME
 
-CPAN::Whois - authors/00whois.xml
+OrePAN::Whois - authors/00whois.xml
 
 =head1 SYNOPSIS
 
-    use CPAN::Whois;
+    use OrePAN::Whois;
 
-    my $whois = CPAN::Whois->new();
+    my $whois = OrePAN::Whois->new();
     $whois->add(id => 'DANKOGAI', type => 'author', has_cpandir => 1);
     $whois->save('00whois.xml');
 
@@ -74,7 +74,7 @@ This is a generator for C<authors/00whois.xml>.
 
 =over 4
 
-=item my $whois = CPAN::Whois->new();
+=item my $whois = OrePAN::Whois->new();
 
 Create new instance of this class.
 
