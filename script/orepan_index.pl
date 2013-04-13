@@ -1,77 +1,11 @@
 #!/usr/bin/perl
-
 use strict;
 use warnings;
 use utf8;
-use lib 'lib';
 use 5.008001;
-use OrePAN::Package::Index;
-use OrePAN::Archive;
-use OrePAN::Whois;
+use OrePAN::App::Index;
 
-use Carp ();
-use Pod::Usage qw/pod2usage/;
-use Data::Dumper; sub p { print STDERR Dumper(@_) }
-use Getopt::Long;
-use File::Basename;
-use Path::Class;
-use Log::Minimal;
-use File::Find;
-use File::Spec::Functions qw(catfile);
-
-our $VERSION='0.01';
-
-GetOptions(
-    'r|repository=s' => \my $repository, 
-    'h|help' => \my $help,
-);
-pod2usage(-verbose=>1) if $help;
-$repository or pod2usage(-verbose=>1);
-
-$repository = dir($repository);
-my $authordir = $repository->subdir('authors');
-
-$repository->subdir('modules')->mkpath;
-my $packages_file = catfile($repository, 'modules', '02packages.details.txt.gz');
-my $packages = OrePAN::Package::Index->load($packages_file);
-
-my $whois_file = $repository->file('authors', '00whois.xml');
-my $whois = OrePAN::Whois->new();
-
-sub build_index {
-    my $file = $_;
-    return if ! -f $file;
-    return if $file !~ m!(?:\.zip|\.tar|\.tar\.gz|\.tgz)$!i;
-
-    (my $parsed = $file) =~ s/^\Q$authordir\E\/id\///;
-    
-    my $pauseid = [split /\//, $parsed]->[2];
-
-    my $archive = OrePAN::Archive->new(filename => $file);
-    infof("get package names of %s", $file);
-    my %packages = $archive->get_packages;
-
-    # make index
-    infof('make index');
-    $packages->add(
-        $parsed,
-        \%packages
-    ) or print STDERR $packages->errstr . "\n";
-
-    $whois->add(
-        id => $pauseid,
-        type => 'author',
-        has_cpandir => 1,
-    );
-}
-
-find({ wanted => \&build_index, no_chdir => 1 }, $authordir );
-
-infof("Saving $packages_file");
-$packages->save($packages_file);
-
-infof("Saving $whois_file");
-$whois->save("$whois_file");
+OrePAN::App::Index->new()->run();
 
 __END__
 
