@@ -65,7 +65,7 @@ sub run {
         
         my $pauseid = [split /\//, $parsed]->[2];
 
-        my $archive = OrePAN::Archive->new(filename => $file);
+        my $archive = OrePAN::Archive->load($file);
         my %packages = $archive->get_packages;
 
         $packages->add(

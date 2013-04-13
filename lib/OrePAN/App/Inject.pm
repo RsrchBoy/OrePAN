@@ -65,7 +65,7 @@ sub run {
         $tmp->flush();
         $pkg = $tmp->filename;
     }
-    my $archive = OrePAN::Archive->new(filename => $pkg);
+    my $archive = OrePAN::Archive->load($pkg);
 
     # Put the archive to repository
     infof("put the archive to repository");

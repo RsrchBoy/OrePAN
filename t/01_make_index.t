@@ -16,7 +16,7 @@ my $tmp = File::Temp->new();
 # make index
 {
     my $index = OrePAN::Package::Index->load($tmp->filename);
-    my $archive = OrePAN::Archive->new(filename => "t/dummy-cpan/Foo-Bar-0.01.tar.gz");
+    my $archive = OrePAN::Archive->load("t/dummy-cpan/Foo-Bar-0.01.tar.gz");
     my %packages = $archive->get_packages;
     is_deeply \%packages, { 'Foo::Bar' => '0.01' };
     my $pauseid = "DUMMY";

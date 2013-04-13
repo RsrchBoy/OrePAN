@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use utf8;
 use Mouse;
-use Mouse::Util::TypeConstraints;
 use YAML::Tiny ();
 use JSON ();
 use List::MoreUtils qw/any/;
@@ -15,14 +14,11 @@ use Path::Class;
 use File::Which qw(which);  
 use Cwd qw/realpath getcwd/;
 use File::pushd;
-
-subtype 'File' => as class_type('Path::Class::File');
-coerce 'File' => from 'Str' => via { Path::Class::file(realpath($_)) };
+use File::Path qw(rmtree);
+use File::Spec::Functions qw(catdir rel2abs);
 
 has filename => (
     is       => 'ro',
-    isa      => 'File',
-    coerce   => 1,
     required => 1,
 );
 
@@ -42,7 +38,7 @@ has tmpdir => (
     is => 'ro',
     lazy => 1,
     default => sub {
-        Path::Class::dir(File::Temp::tempdir(CLEANUP => 0))
+        File::Temp::tempdir(CLEANUP => 0)
     },
 );
 
@@ -52,7 +48,7 @@ has files => (
     default => sub {
         my $self = shift;
         my @files;
-        $self->archive->recurse(callback => sub {
+        dir($self->archive)->recurse(callback => sub {
             my $path = shift;
             return if $path->is_dir;
             push @files, $path;
@@ -86,6 +82,13 @@ has meta => (
 );
 
 no Mouse;
+
+sub load {
+    my ($class, $filename) = @_;
+    $class->new(
+        filename => rel2abs($filename),
+    );
+}
 
 sub _parse_version($) {
     my $parsefile = shift;
@@ -214,7 +217,7 @@ sub untar {
         $root =~ s{^(.+?)/.*$}{$1};
         debugf("cwd: %s, tar: $tar $xf$ar $tarfile", getcwd);
         system "$tar $xf$ar $tarfile";
-        return $tempdir->subdir($root) if -d $root;
+        return catdir($tempdir, $root) if -d $root;
         die "Bad archive: $tarfile";
     }
     else {
@@ -234,7 +237,7 @@ sub unzip {
         chomp $root;
         $root =~ s{^\s+testing:\s+(.+?)/\s+OK$}{$1};
         system "$unzip $zipfile";
-        return $tempdir->subdir($root) if -d $root;        
+        return catdir($tempdir, $root) if -d $root;        
     }
     else {
         die "can't find unzip";
@@ -243,7 +246,7 @@ sub unzip {
 
 sub DEMOLISH {
     my $self = shift;
-    $self->tmpdir->rmtree();
+    rmtree($self->tmpdir);
 }
 
 1;

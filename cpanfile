@@ -16,7 +16,6 @@ requires 'Path::Class';
 requires 'YAML::Tiny';
 requires 'File::pushd';
 requires 'Getopt::Long';
-requires 'Mouse::Util::TypeConstraints';
 requires 'Pod::Usage';
 requires 'version';
 requires 'Class::Accessor::Lite', 0.05;
