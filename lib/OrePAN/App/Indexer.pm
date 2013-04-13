@@ -11,7 +11,7 @@ use Carp ();
 use Pod::Usage qw/pod2usage/;
 use Data::Dumper; sub p { print STDERR Dumper(@_) }
 use Getopt::Long;
-use File::Basename;
+use File::Basename qw(dirname basename);
 use Path::Class;
 use Log::Minimal;
 use File::Find;
@@ -20,9 +20,10 @@ use File::Path qw(mkpath);
 
 our $VERSION='0.01';
 
-use Class::Accessor::Lite (
-    new => 1,
-);
+sub new {
+    my $class = shift;
+    bless {}, $class;
+}
 
 sub run {
     my $self = shift;
@@ -33,7 +34,12 @@ sub run {
     $p->getoptions(
         'r|repository=s' => \my $repository, 
         'h|help'         => \my $help,
+        'v|version'      => \my $version,
     );
+    if ($version) {
+        printf "%s %s\n", basename($0), $VERSION;
+        exit 0;
+    }
     if ($help || !$repository) {
         pod2usage(-input => $0, -verbose=>1);
     }
