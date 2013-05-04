@@ -15,6 +15,7 @@ use File::pushd;
 use File::Path qw(rmtree);
 use File::Spec::Functions qw(catdir rel2abs);
 use File::Find ();
+use Try::Tiny;
 
 sub load {
     my ($class, $filename) = @_;
@@ -31,7 +32,7 @@ sub load_meta {
 
     my @files = @{$self->files};
     if ( my ($json) = grep /META\.json$/, @files ) {
-        CPAN::Meta->load_file($json)->as_struct();
+        try { CPAN::Meta->load_file($json)->as_struct() };
     }
     elsif ( my ($yml) = grep /META\.yml$/, @files ) {
         my $dat = eval {
