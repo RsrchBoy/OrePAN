@@ -9,7 +9,7 @@ use List::MoreUtils qw/any/;
 use Log::Minimal;
 use File::Basename;
 use File::Temp qw(tempdir);
-use File::Which qw(which);  
+use File::Which qw(which);
 use Cwd qw/realpath getcwd/;
 use File::pushd;
 use File::Path qw(rmtree);
@@ -112,7 +112,7 @@ sub _parse_version($) {
 
             # Copy from ExtUtils::MM_Unix
             my $eval = qq{
-                package 
+                package
                   ExtUtils::MakeMaker::_version;
                 no strict;
                 BEGIN { eval {
@@ -203,7 +203,7 @@ sub untar {
     if ( my $tar = which('tar') ) {
         my $tempdir = $self->tmpdir;
         my $guard = pushd($tempdir);
-        
+
         my $xf = "xf";
         my $ar = $tarfile =~ /bz2$/ ? 'j' : 'z';
         my($root, @others) = `$tar tf$ar $tarfile`
@@ -232,7 +232,7 @@ sub unzip {
         chomp $root;
         $root =~ s{^\s+testing:\s+(.+?)/\s+OK$}{$1};
         system "$unzip $zipfile";
-        return catdir($tempdir, $root) if -d $root;        
+        return catdir($tempdir, $root) if -d $root;
     }
     else {
         die "can't find unzip";
